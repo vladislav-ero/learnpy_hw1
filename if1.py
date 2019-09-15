@@ -13,13 +13,21 @@
 * Вывести содержимое переменной на экран
 
 """
+def Occupation(age):
+    if age <= 7:
+        return "Kindergarten"
+    elif 7 < age <= 17:
+        return "School"
+    elif 17 < age <= 24:
+        return "Uni"
+    else:
+        return "Work"
+    
 
 def main():
-    """
-    Эта функция вызывается автоматически при запуске скрипта в консоли
-    В ней надо заменить pass на ваш код
-    """
-    pass
+    age = int(input("Enter your age: "))
+    ocup = Occupation(age)
+    print(ocup)
 
 if __name__ == "__main__":
     main()

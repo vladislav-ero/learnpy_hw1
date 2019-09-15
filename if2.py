@@ -15,12 +15,25 @@
 
 """
 
+def CompareStrings(first_string, second_string):
+    # first_string = strings[0]
+    # second_string = strings[1]
+    if not type(first_string) == str or not type(second_string) == str:
+        return 0
+    if first_string == second_string:
+        return 1
+    if not first_string == second_string and len(first_string) > len(second_string):
+        return 2
+    if not first_string == second_string and second_string == "learn":
+        return 3
+
 def main():
-    """
-    Эта функция вызывается автоматически при запуске скрипта в консоли
-    В ней надо заменить pass на ваш код
-    """
-    pass
+    
+    print(CompareStrings(2, 39)) # 0
+    print(CompareStrings("strk", "strk")) # 1
+    print(CompareStrings("strk", "str")) # 2
+    print(CompareStrings("sssss", "learn")) # 3
+
     
 if __name__ == "__main__":
     main()
