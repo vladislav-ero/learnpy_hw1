@@ -39,74 +39,20 @@ def greet_user(bot, update):
     print(text)
     update.message.reply_text(text)
 
-def get_constel(bot, update):
-    today = str(date.today().strftime("%Y/%m/%d"))
-    
-    # planets = {"Mercury": ephem.Mercury(today), 
-    # "Venus": ephem.Venus(today), 
-    # "Mars" : ephem.Mars(today), 
-    # "Jupiter": ephem.Jupiter(today), 
-    # "Saturn": ephem.Saturn(today), 
-    # "Uranus": ephem.Uranus(today), 
-    # "Neptune": ephem.Neptune(today)}
-
-    planet_input = str(update.message.text.split()[1]).lower().capitalize()
-
-    if planet_input == "Mercury":
-        mercury = ephem.Mercury(today)
-        mercury_const = ephem.constellation(mercury)[1]
-        planet_output = f"Mercury is in {mercury_const}"
-        update.message.reply_text(planet_output)
-
-    if planet_input == "Venus":
-        venus = ephem.Venus(today)
-        venus_const = ephem.constellation(venus)[1]
-        planet_output = f"Venus is in {venus_const}"
-        update.message.reply_text(planet_output)
-
-    if planet_input == "Mars":
-        mars = ephem.Mars(today)
-        mars_const = ephem.constellation(mars)[1]
-        planet_output = f"Mars is in {mars_const}"
-        update.message.reply_text(planet_output)
-
-    if planet_input == "Jupiter":
-        jupiter = ephem.Jupiter(today)
-        jupiter_const = ephem.constellation(jupiter)[1]
-        planet_output = f"Jupiter is in {jupiter_const}"
-        update.message.reply_text(planet_output)
-
-    if planet_input == "Saturn":
-        saturn = ephem.Saturn(today)
-        saturn_const = ephem.constellation(saturn)[1]
-        planet_output = f"Saturn is in {saturn_const}"
-        update.message.reply_text(planet_output)
-
-    if planet_input == "Uranus":
-        uranus = ephem.Uranus(today)
-        uranus_const = ephem.constellation(uranus)[1]
-        planet_output = f"Uranus is in {uranus_const}"
-        update.message.reply_text(planet_output)
-
-    if planet_input == "Neptune":
-        neptune = ephem.Neptune(today)
-        neptune_const = ephem.constellation(neptune)[1]
-        planet_output = f"Neptune is in {neptune_const}"
-        update.message.reply_text(planet_output) 
-
-    # if planet_input in planets:
-    #     print(ephem.constellation(planets[planet_input]))
-
-    
-    
-    # day = str(date.today()).split("-")
-    # print(day)
-
-    # today = f"{day[0]}/{day[1]}/{day[2]}"
-    # print("Today's date:", today)
-    # print(planet_input)
-    # update.message.reply_text("Today's date:", today)
-    # update.message.reply_text(planet_input)
+def answer_planet(bot, update):
+    user_text = update.message.text.split() 
+    try:
+        planet = user_text[1].lower().capitalize()
+    except IndexError:
+        update.message.reply_text("Вы не ввели название планеты после /planet")       
+    today = date.today().strftime('%Y/%m/%d')
+    logging.info(f"User: {update.message.chat.username}, Message: {update.message.text}, Planet: {planet}")
+    try:
+        get_planet = getattr(planet, ephem)(today)
+    except AttributeError:
+        update.message.reply_text("Я не могу определить, в каком созвездии ваша планета, или вы ввели не название планеты.")
+    const = ephem.constellation(get_planet)
+    update.message.reply_text(f"Сегодня {planet} находится в созвездии {const[1]}.")
 
 def talk_to_me(bot, update):
     user_text = update.message.text 
@@ -122,7 +68,7 @@ def main():
     
     dp = mybot.dispatcher
     dp.add_handler(CommandHandler("start", greet_user))
-    dp.add_handler(CommandHandler("planet", get_constel))
+    dp.add_handler(CommandHandler("planet", answer_planet))
     dp.add_handler(MessageHandler(Filters.text, talk_to_me))
     
     mybot.start_polling()
